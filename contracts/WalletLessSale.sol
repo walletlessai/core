@@ -1,4 +1,11 @@
-// SPDX-License-Identifier: MIT
+/** 
+ * SPDX-License-Identifier: MIT
+ * WalletLess Sale Contract                                                          
+                                        
+ █░█░█ ▄▀█ █░░ █░░ █▀▀ ▀█▀ █░░ █▀▀ █▀ █▀
+ ▀▄▀▄▀ █▀█ █▄▄ █▄▄ ██▄ ░█░ █▄▄ ██▄ ▄█ ▄█
+
+*/
 
 pragma solidity 0.8.17;
 
@@ -12,7 +19,6 @@ contract WalletLessSale is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    // seed sale enable flags
     bool public walletlessSaleEnabled;
     uint256 public minBuy = 100 * 10 ** 18; // if 0 means no limit
     uint256 public maxBuy = 10000 * 10 ** 18; // if 0 means no limit
@@ -56,7 +62,7 @@ contract WalletLessSale is Ownable {
     constructor(address walletLessCoin_) {
         walletLessCoin = IERC20(walletLessCoin_);
         saleEndTime = block.timestamp + 120 days;
-        options[0] = Option({
+        options[0] = Option({ // qymball
             price: 333333000000000,
             totalAmount: 20_000_000 * 10 ** 18,
             totalSold: 0,
@@ -64,7 +70,7 @@ contract WalletLessSale is Ownable {
             lockTime: 0,
             enabled: true
         });
-        options[1] = Option({
+        options[1] = Option({  // oaktwo
             price: 250000000000000,
             totalAmount: 6_000_000 * 10 ** 18,
             totalSold: 0,
@@ -72,7 +78,7 @@ contract WalletLessSale is Ownable {
             lockTime: 60 days,
             enabled: true
         });
-        options[2] = Option({
+        options[2] = Option({  // tukanny
             price: 142857000000000,
             totalAmount: 7_000_000 * 10 ** 18,
             totalSold: 0,
@@ -80,7 +86,7 @@ contract WalletLessSale is Ownable {
             lockTime: 90 days,
             enabled: true
         });
-        options[3] = Option({
+        options[3] = Option({  // alei
             price: 100000000000000,
             totalAmount: 8_000_000 * 10 ** 18,
             totalSold: 0,
@@ -88,7 +94,7 @@ contract WalletLessSale is Ownable {
             lockTime: 120 days,
             enabled: true
         });
-        options[4] = Option({
+        options[4] = Option({  // lokhen
             price: 66667000000000,
             totalAmount: 9_000_000 * 10 ** 18,
             totalSold: 0,
@@ -96,7 +102,7 @@ contract WalletLessSale is Ownable {
             lockTime: 180 days,
             enabled: true
         });
-        options[5] = Option({
+        options[5] = Option({  // dietitian
             price: 50000000000000,
             totalAmount: 10_000_000 * 10 ** 18,
             totalSold: 0,
@@ -104,21 +110,30 @@ contract WalletLessSale is Ownable {
             lockTime: 240 days,
             enabled: true
         });
+
         addorSetFundAddress(0x341f9B9C3b8BC4Ab3a52DAb6fAFF42201A8eccb6, 100);
         addorSetFundAddress(0xd0d4Bdd0E93DF8622149c1Eb53076FBfc8aa1d0D, 100);
         addorSetFundAddress(0xA7556724E33Af7B3Fde340196e86d0FBc380016a, 100);
         addorSetFundAddress(0x6871eE27C51F417d1CEfAA60122367487bdCC8FC, 100);
         addorSetFundAddress(0x7E1Dbef6Da4A558eE4A51ee2C7a9610cCbcd5c46, 100);
         addorSetFundAddress(0xEaC29ECCC493a33e711678f35Bb12fa6948FD319, 300);
-        addorSetFundAddress(0x7E1Dbef6Da4A558eE4A51ee2C7a9610cCbcd5c46, 100);
-        addorSetFundAddress(0xF2a959E2CB000a51cFD17E6BEB760B50220A580A, 400);
+        addorSetFundAddress(0x516401cFf4eEaD44a91c1DC83C434346903F72A0, 100);
+        addorSetFundAddress(0xF2a959E2CB000a51cFD17E6BEB760B50220A580A, 400); 
         addorSetFundAddress(0x6247bd9967d72D3ef32A5383C20a1d65bAeD4087, 400); 
-        addorSetFundAddress(0xC07E62003A6D9fCE3eFAB6Fe0a0b0F6AD5264FD7, 400);
-        addorSetFundAddress(0x9afa4c83b3C2f22A10E803dD075B513C81F1eD54, 400);
-        addorSetFundAddress(0xcaE2D679961bd3e7501E9a48a9f820521bE6d1eE, 400);
-        addorSetFundAddress(0xaBf64A1998Bd68E3d48a68d6353dF6DE569A37bE, 400);
-        addorSetFundAddress(0x805d679427F08a0597a353072298e1ca9C3Cc121, 400);
-        addorSetFundAddress(0xfc7c561Fd8A0B44a07Ef5E8F033a25Fa53a62d29, 200);
+        addorSetFundAddress(0xC07E62003A6D9fCE3eFAB6Fe0a0b0F6AD5264FD7, 400); 
+        addorSetFundAddress(0x9afa4c83b3C2f22A10E803dD075B513C81F1eD54, 400); 
+        addorSetFundAddress(0xcaE2D679961bd3e7501E9a48a9f820521bE6d1eE, 400); 
+        addorSetFundAddress(0xaBf64A1998Bd68E3d48a68d6353dF6DE569A37bE, 400); 
+        addorSetFundAddress(0x805d679427F08a0597a353072298e1ca9C3Cc121, 400); 
+        addorSetFundAddress(0xfc7c561Fd8A0B44a07Ef5E8F033a25Fa53a62d29, 200); 
+        addorSetFundAddress(0xD6aA74E50cdA3A71b839ab27c4B5823C96e3Fb70, 700); 
+        addorSetFundAddress(0x5D49b8e2dc391B16337F1E97152a2878BFf814AF, 700); 
+        addorSetFundAddress(0x315eF8c4cEfC554510f6CF98AB465b4F329024B1, 700); 
+        addorSetFundAddress(0x400FD42C24a077072A654A783DC58aCb65AA0B60, 700); 
+        addorSetFundAddress(0x33c980E461E5E2363e6A2401Edde9E858f3A4807, 700); 
+        addorSetFundAddress(0xc6C565D73fd28E06044B01975684862c95d4De57, 600); 
+        addorSetFundAddress(0xf9600e50f78C284080d550Df00BF51CADF9165Ef, 500); 
+        addorSetFundAddress(0x194761207897B7Be5c054E68825b99AD9609fa19, 1000); 
     }
 
     receive() external payable {
@@ -133,7 +148,7 @@ contract WalletLessSale is Ownable {
 
     /**
      * @dev Buy the coins
-     * @param _beneficiary robochainToken amount want to buy
+     * @param _beneficiary  amount want to buy
      */
 
     function buy(

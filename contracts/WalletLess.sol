@@ -1,4 +1,12 @@
-// SPDX-License-Identifier: MIT
+
+/** 
+ * SPDX-License-Identifier: MIT
+ * WalletLess Token Contract                                                          
+                                        
+ █░█░█ ▄▀█ █░░ █░░ █▀▀ ▀█▀ █░░ █▀▀ █▀ █▀
+ ▀▄▀▄▀ █▀█ █▄▄ █▄▄ ██▄ ░█░ █▄▄ ██▄ ▄█ ▄█
+
+*/
 
 pragma solidity 0.8.17;
 
@@ -9,6 +17,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract WalletLess is ERC20, Ownable, Pausable {
     event sendTokensInfo(string supplyName, address supplyAddress);
     event pausedStatus(bool status);
+    event claimedSpendingReward(address user, uint256 amount);
     
     uint256 public spendingRewardTokens = 5_000_000 ether;
     uint256 public spendingRewardRate = 200;
@@ -82,8 +91,8 @@ contract WalletLess is ERC20, Ownable, Pausable {
 
     function sendTokens(uint256 _SupplyId , address _to) external onlyOwner {
         require(_to != address(0),"WalletLess: _to should not be zero");
-        Supply memory listedSupply = distributionInfo[_SupplyId];
-        require(!listedSupply.claimed, "WalletLess: not eligible");
+        Supply storage listedSupply = distributionInfo[_SupplyId];
+        require(!listedSupply.claimed, "WalletLess: Already Claimed!");
         listedSupply.claimed = true;
         _transfer(address(this), _to, listedSupply.amount);
         emit sendTokensInfo(listedSupply.name, _to);
@@ -144,8 +153,9 @@ contract WalletLess is ERC20, Ownable, Pausable {
     function claimSpendingReward() external  {
         require(spenindRewards[msg.sender] > 0 && spenindRewards[msg.sender] <= spendingRewardTokens,"WalletLess: Not have enough Reward");
         spendingRewardTokens = spendingRewardTokens - spenindRewards[msg.sender];
-        spenindRewards[msg.sender] = 0;
          _transfer(address(this), msg.sender, spenindRewards[msg.sender]);
+         emit claimedSpendingReward(msg.sender, spenindRewards[msg.sender]);
+        spenindRewards[msg.sender] = 0;
     }
 
     function _transfer(
