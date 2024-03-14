@@ -118,11 +118,11 @@ contract WalletLessSale is Ownable {
         addorSetFundAddress(0x7E1Dbef6Da4A558eE4A51ee2C7a9610cCbcd5c46, 100);
         addorSetFundAddress(0xEaC29ECCC493a33e711678f35Bb12fa6948FD319, 300);
         addorSetFundAddress(0x516401cFf4eEaD44a91c1DC83C434346903F72A0, 100);
-        addorSetFundAddress(0xF2a959E2CB000a51cFD17E6BEB760B50220A580A, 400); 
-        addorSetFundAddress(0x6247bd9967d72D3ef32A5383C20a1d65bAeD4087, 400); 
-        addorSetFundAddress(0xC07E62003A6D9fCE3eFAB6Fe0a0b0F6AD5264FD7, 400); 
-        addorSetFundAddress(0x9afa4c83b3C2f22A10E803dD075B513C81F1eD54, 400); 
-        addorSetFundAddress(0xcaE2D679961bd3e7501E9a48a9f820521bE6d1eE, 400); 
+        addorSetFundAddress(0xF2a959E2CB000a51cFD17E6BEB760B50220A580A, 500); 
+        addorSetFundAddress(0x6247bd9967d72D3ef32A5383C20a1d65bAeD4087, 500); 
+        addorSetFundAddress(0xC07E62003A6D9fCE3eFAB6Fe0a0b0F6AD5264FD7, 500); 
+        addorSetFundAddress(0x9afa4c83b3C2f22A10E803dD075B513C81F1eD54, 500); 
+        addorSetFundAddress(0xcaE2D679961bd3e7501E9a48a9f820521bE6d1eE, 500); 
         addorSetFundAddress(0xaBf64A1998Bd68E3d48a68d6353dF6DE569A37bE, 400); 
         addorSetFundAddress(0x805d679427F08a0597a353072298e1ca9C3Cc121, 400); 
         addorSetFundAddress(0xfc7c561Fd8A0B44a07Ef5E8F033a25Fa53a62d29, 200); 

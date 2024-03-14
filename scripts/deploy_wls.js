@@ -18,8 +18,8 @@ async function main() {
   let name = "Wallet Less";
   let symbol = "WLS";
 
-  const WalletLess = await hre.ethers.getContractFactory("WalletLess");
-  const WalletLess = await WalletLess.deploy(name, symbol);
+  let WalletLess = await hre.ethers.getContractFactory("WalletLess");
+  WalletLess = await WalletLess.deploy(name, symbol);
   
   console.log("contract address: " + WalletLess.address)
 

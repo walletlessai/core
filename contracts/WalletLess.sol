@@ -93,6 +93,7 @@ contract WalletLess is ERC20, Ownable, Pausable {
         require(_to != address(0),"WalletLess: _to should not be zero");
         Supply storage listedSupply = distributionInfo[_SupplyId];
         require(!listedSupply.claimed, "WalletLess: Already Claimed!");
+        require(listedSupply.amount > 0, "WalletLess: not eligible");
         listedSupply.claimed = true;
         _transfer(address(this), _to, listedSupply.amount);
         emit sendTokensInfo(listedSupply.name, _to);
