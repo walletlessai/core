@@ -35,7 +35,7 @@ contract WalletLessSale is Ownable {
     }
 
     struct Option {
-        uint256 price;
+        uint256 numOftokensInOneBNB;
         uint256 totalAmount; // total available tokens for sale
         uint256 totalSold; // total sold
         uint256 totalBnb; // total bnb received
@@ -63,7 +63,7 @@ contract WalletLessSale is Ownable {
         walletLessCoin = IERC20(walletLessCoin_);
         saleEndTime = block.timestamp + 120 days;
         options[0] = Option({ // qymball
-            price: 333333000000000,
+            numOftokensInOneBNB: 5000,
             totalAmount: 20_000_000 * 10 ** 18,
             totalSold: 0,
             totalBnb: 0,
@@ -71,7 +71,7 @@ contract WalletLessSale is Ownable {
             enabled: true
         });
         options[1] = Option({  // oaktwo
-            price: 250000000000000,
+            numOftokensInOneBNB: 6000,
             totalAmount: 6_000_000 * 10 ** 18,
             totalSold: 0,
             totalBnb: 0,
@@ -79,7 +79,7 @@ contract WalletLessSale is Ownable {
             enabled: true
         });
         options[2] = Option({  // tukanny
-            price: 142857000000000,
+            numOftokensInOneBNB: 9000,
             totalAmount: 7_000_000 * 10 ** 18,
             totalSold: 0,
             totalBnb: 0,
@@ -87,7 +87,7 @@ contract WalletLessSale is Ownable {
             enabled: true
         });
         options[3] = Option({  // alei
-            price: 100000000000000,
+            numOftokensInOneBNB: 12000,
             totalAmount: 8_000_000 * 10 ** 18,
             totalSold: 0,
             totalBnb: 0,
@@ -95,7 +95,7 @@ contract WalletLessSale is Ownable {
             enabled: true
         });
         options[4] = Option({  // lokhen
-            price: 66667000000000,
+            numOftokensInOneBNB: 17000,
             totalAmount: 9_000_000 * 10 ** 18,
             totalSold: 0,
             totalBnb: 0,
@@ -103,7 +103,7 @@ contract WalletLessSale is Ownable {
             enabled: true
         });
         options[5] = Option({  // dietitian
-            price: 50000000000000,
+            numOftokensInOneBNB: 22000,
             totalAmount: 10_000_000 * 10 ** 18,
             totalSold: 0,
             totalBnb: 0,
@@ -164,19 +164,14 @@ contract WalletLessSale is Ownable {
         uint256 bnbAmount = msg.value;
         require(bnbAmount > 0, "WalletLessSale: Insufficient BNB amount");
         Option storage op = options[_option];
+        User storage userStruct = users[_option][_beneficiary];
         uint256 tokensToBeBought = _getTokenAmount(bnbAmount, _option);
-        require(tokensToBeBought > 0, "WalletLessSale: All tokens Sold Out");
-        require(
-            tokensToBeBought > minBuy,
-            "WalletLessSale: All tokens Sold Out"
-        );
+        require(tokensToBeBought > 0, "WalletLessSale: Reached Maximum Cap");
+        require(tokensToBeBought <= maxBuy, "WalletLessSale: Reached Maximum Cap");
+        require(tokensToBeBought <= op.totalAmount, "WalletLessSale: Reached Maximum Cap");
+        require((userStruct.tokenBoughts + tokensToBeBought) <= maxBuy, "WalletLessSale: Reached Maximum Cap");
+        require(tokensToBeBought > minBuy,"WalletLessSale: less then 100 tokens not allowed");
 
-        uint256 cost = tokensToBeBought.mul(op.price);
-        if (bnbAmount > cost) {
-            address payable refundAccount = payable(_beneficiary);
-            refundAccount.transfer(bnbAmount.sub(cost));
-            bnbAmount = cost;
-        }
         if (!isAllowedClaimReward[_beneficiary]) {
             isAllowedClaimReward[_beneficiary] = true;
         }
@@ -190,7 +185,6 @@ contract WalletLessSale is Ownable {
         op.totalBnb = op.totalBnb.add(bnbAmount);
         op.totalAmount = op.totalAmount.sub(tokensToBeBought);
         op.totalSold = op.totalSold.add(tokensToBeBought);
-        User storage userStruct = users[_option][_beneficiary];
         userStruct.tokenBoughts = userStruct.tokenBoughts.add(tokensToBeBought);
         if (op.lockTime > 0) {
             userStruct.pendingForClaim = userStruct.pendingForClaim.add(
@@ -199,6 +193,8 @@ contract WalletLessSale is Ownable {
             userStruct.nextUnlockDate = block.timestamp.add(op.lockTime);
         } else {
             walletLessCoin.safeTransfer(msg.sender, tokensToBeBought);
+            userStruct.nextUnlockDate = 0;
+            userStruct.pendingForClaim = 0;
         }
         emit TokenPurchased(msg.sender, tokensToBeBought);
     }
@@ -206,21 +202,21 @@ contract WalletLessSale is Ownable {
     function claimReward() public {
         require(
             isAllowedClaimReward[msg.sender],
-            "WalletLessSale: address is not allowed to call this function"
+            "WalletLessSale: address is not allowed to call claim rewards!"
         );
         walletLessCoin.safeTransfer(msg.sender, refRewardAmount[msg.sender]);
         unPaidRefReward = unPaidRefReward - refRewardAmount[msg.sender];
+        refRewardAmount[msg.sender] = 0;
     }
 
     function _getTokenAmount(
         uint256 _bnbAmount,
         uint256 _option
     ) internal view returns (uint256) {
-        uint256 _amoutOfTokens = _bnbAmount.div(options[_option].price);
-        _amoutOfTokens = _amoutOfTokens > maxBuy ? maxBuy : _amoutOfTokens;
-        _amoutOfTokens = _amoutOfTokens > options[_option].totalAmount
-            ? options[_option].totalAmount
-            : _amoutOfTokens;
+        uint256 ONE_BNB = 10**18;
+        uint256 _price = ONE_BNB.div(options[_option].numOftokensInOneBNB);
+        uint256 _amoutOfTokens =   _bnbAmount.div(_price);
+        _amoutOfTokens = _amoutOfTokens * 10**18;
         return _amoutOfTokens;
     }
 
@@ -270,7 +266,7 @@ contract WalletLessSale is Ownable {
      */
 
     function BurnUnSoldandUnclaimed(uint256 _amount) external onlyOwner {
-        walletLessCoin.safeTransfer(address(0), _amount);
+        walletLessCoin.safeTransfer(address(0x000000000000000000000000000000000000dEaD), _amount);
         emit BurnTokens(_amount);
     }
 
