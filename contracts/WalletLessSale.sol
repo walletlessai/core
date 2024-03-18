@@ -24,6 +24,7 @@ contract WalletLessSale is Ownable {
     uint256 public maxBuy = 10000 * 10 ** 18; // if 0 means no limit
     uint256 public refRewardRate = 500;
     uint256 public unPaidRefReward;
+    uint256 public totalSoldTokens;
     uint256 public saleEndTime;
     IERC20 public walletLessCoin;
     uint256 fundsIndex = 0;
@@ -186,6 +187,7 @@ contract WalletLessSale is Ownable {
         op.totalAmount = op.totalAmount.sub(tokensToBeBought);
         op.totalSold = op.totalSold.add(tokensToBeBought);
         userStruct.tokenBoughts = userStruct.tokenBoughts.add(tokensToBeBought);
+        totalSoldTokens = totalSoldTokens.add(tokensToBeBought);
         if (op.lockTime > 0) {
             userStruct.pendingForClaim = userStruct.pendingForClaim.add(
                 tokensToBeBought
@@ -260,12 +262,23 @@ contract WalletLessSale is Ownable {
         emit TokenClaimed(user, userStruct.pendingForClaim, _option);
     }
 
-    /**
-     * @dev Burn unsold & unclaimed rewards tokens
+      /**
+     * @dev Burn unClaimedReward
      * @param _amount of tokens
      */
 
-    function BurnUnSoldandUnclaimed(uint256 _amount) external onlyOwner {
+    function BurnUnClaimed(uint256 _amount) external onlyOwner {
+        walletLessCoin.safeTransfer(address(0x000000000000000000000000000000000000dEaD), _amount);
+        unPaidRefReward = unPaidRefReward - _amount;
+        emit BurnTokens(_amount);
+    }
+
+    /**
+     * @dev Burn unsold
+     * @param _amount of tokens
+     */
+
+    function BurnUnSold(uint256 _amount) external onlyOwner {
         walletLessCoin.safeTransfer(address(0x000000000000000000000000000000000000dEaD), _amount);
         emit BurnTokens(_amount);
     }
